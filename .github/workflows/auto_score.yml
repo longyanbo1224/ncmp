@@ -2,7 +2,7 @@ name: Auto Score
 
 on:
   schedule:
-    - cron: '0 10 * * *'  # UTC 10:00 (北京时间18:00)
+    - cron: '8 10 * * *'  # UTC 10:08 (北京时间18:08)
   workflow_dispatch:
 
 jobs:
