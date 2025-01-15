@@ -17,16 +17,30 @@ class Config:
         return all(os.getenv(var) for var in required_vars)
     
     def _load_from_env(self) -> Dict:
-        return {
-            "Cookie_MUSIC_U": os.getenv("MUSIC_U"),
-            "Cookie___csrf": os.getenv("CSRF"),
-            "notify_email": os.getenv("NOTIFY_EMAIL"),
-            "email_password": os.getenv("EMAIL_PASSWORD"),
-            "smtp_server": os.getenv("SMTP_SERVER", "smtp.gmail.com"),
-            "smtp_port": int(os.getenv("SMTP_PORT", "465")),
-            "wait_time_min": float(os.getenv("WAIT_TIME_MIN") or "15"),
-            "wait_time_max": float(os.getenv("WAIT_TIME_MAX") or "20")
-        }
+        config = {}
+        
+        # 必需的环境变量
+        config["Cookie_MUSIC_U"] = os.getenv("MUSIC_U")
+        config["Cookie___csrf"] = os.getenv("CSRF")
+        
+        # 可选的环境变量
+        if notify_email := os.getenv("NOTIFY_EMAIL"):
+            config["notify_email"] = notify_email
+        if email_password := os.getenv("EMAIL_PASSWORD"):
+            config["email_password"] = email_password
+        if smtp_server := os.getenv("SMTP_SERVER"):
+            config["smtp_server"] = smtp_server
+        if smtp_port := os.getenv("SMTP_PORT"):
+            config["smtp_port"] = int(smtp_port)
+        if wait_min := os.getenv("WAIT_TIME_MIN"):
+            config["wait_time_min"] = float(wait_min)
+        if wait_max := os.getenv("WAIT_TIME_MAX"):
+            config["wait_time_max"] = float(wait_max)
+            
+        config.setdefault("wait_time_min", 15)
+        config.setdefault("wait_time_max", 20)
+        
+        return config
     
     def _load_from_file(self) -> Dict:
         try:
@@ -63,4 +77,4 @@ class Config:
         """获取随机等待时间"""
         min_time = float(self.get("wait_time_min", 15))
         max_time = float(self.get("wait_time_max", 20))
-        return random.uniform(min_time, max_time) 
+        return random.uniform(min_time, max_time)
